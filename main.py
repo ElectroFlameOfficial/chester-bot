@@ -1,5 +1,5 @@
 
-import os, re, discord, asyncio, psycopg2, time, random
+import os, re, discord, asyncio, psycopg2, time, random, json
 from discord.ext.commands.cooldowns import BucketType
 from dateutil.relativedelta import relativedelta as rd
 from datetime import datetime as dt
@@ -37,10 +37,18 @@ async def status(ctx, availability, *, activity):
         await ctx.message.add_reaction(emoji = '✅')
 
 @bot.command()
-async def admin(ctx, member : discord.Member):
+async def admin(ctx, option, member : discord.Member):
     if ctx.message.author.id in (264028228925128704, 589045072587128842, 333742519122788372):
-        db.execute("INSERT INTO admins VALUES (%s)" % str(member.id))
-        await ctx.message.add_reaction(emoji = '✅')
+        if option.lower() == 'add':
+            db.execute("INSERT INTO admins VALUES (%s)" % str(member.id))
+            await ctx.message.add_reaction(emoji = '✅')
+        elif option.lower() in ('remove', 'rm') and member.id != ctx.message.author.id:
+            db.execute("DELETE FROM admins WHERE id = %s" % str(member.id))
+            await ctx.message.add_reaction(emoji = '✅')
+        else:
+            await ctx.message.add_reaction(emoji = '❌')
+    else:
+        await ctx.message.add_reaction(emoji = '❌')
 
 @bot.command()
 async def ping(ctx):

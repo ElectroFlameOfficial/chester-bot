@@ -2,7 +2,5 @@ pillow>=7.2.0
 git+https://github.com/Rapptz/discord.py
 psycopg2>=2.7,<2.8 --no-binary psycopg2
 asyncio
-websockets
 aiohttp
 datetime
-bs4
